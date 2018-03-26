@@ -22,12 +22,12 @@ import org.apache.hadoop.io.WritableUtils;
 
 public class CompositeKey implements WritableComparable<CompositeKey> {
 
-	private String symbol;
+	private Text symbol;
 	private Long count;
 	
 	public CompositeKey() { }
 	
-	public CompositeKey(String symbol, Long count) {
+	public CompositeKey(Text symbol, Long count) {
 		this.symbol = symbol;
 		this.count = count;
 	}
@@ -69,11 +69,11 @@ public class CompositeKey implements WritableComparable<CompositeKey> {
 	 * Gets the symbol.
 	 * @return Symbol.
 	 */
-	public String getSymbol() {
+	public Text getSymbol() {
 		return symbol;
 	}
 
-	public void setSymbol(String symbol) {
+	public void setSymbol(Text symbol) {
 		this.symbol = symbol;
 	}
 
