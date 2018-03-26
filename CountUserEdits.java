@@ -28,7 +28,7 @@ import org.apache.hadoop.io.LongWritable;
 public class CountUserEdits {
   // https://vangjee.wordpress.com/2012/03/20/secondary-sorting-aka-sorting-values-in-hadoops-mapreduce-programming-paradigm/
   // http://blog.ditullio.fr/2015/12/24/hadoop-basics-filter-aggregate-sort-mapreduce/
-  public class CompositeKeyComparator extends WritableComparator {
+  public static class CompositeKeyComparator extends WritableComparator {
     public CompositeKeyComparator() {
         super(CompositeKey.class, true);
     }   
@@ -46,7 +46,7 @@ public class CountUserEdits {
         return result;
     }
   }
-  public class NaturalKeyGroupingComparator extends WritableComparator {
+  public static class NaturalKeyGroupingComparator extends WritableComparator {
     public NaturalKeyGroupingComparator() {
         super(CompositeKey.class, true);
     }   
@@ -59,7 +59,7 @@ public class CountUserEdits {
         return k1.getSymbol().compareTo(k2.getSymbol());
     }
   }
-  public class NaturalKeyPartitioner extends Partitioner<CompositeKey, Long> {
+  public static class NaturalKeyPartitioner extends Partitioner<CompositeKey, Long> {
  
     @Override
     public int getPartition(CompositeKey key, Long val, int numPartitions) {
