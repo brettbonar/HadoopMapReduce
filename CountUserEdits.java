@@ -97,9 +97,9 @@ public class CountUserEdits {
     private final static LongWritable one = new LongWritable(1);
     private String userId = new String();
 
-    public void map(Object key, String value, Context context
+    public void map(Object key, Text value, Context context
                     ) throws IOException, InterruptedException {
-      StringTokenizer itr = new StringTokenizer(value.toString());
+      //StringTokenizer itr = new StringTokenizer(value.toString());
       String[] tokens = value.toString().split("\\s+");
 
       CompositeKey compositeKey = new CompositeKey(tokens[0].trim(), one.get());
@@ -130,7 +130,7 @@ public class CountUserEdits {
 // }
 
   public static class IntSumReducer
-       extends Reducer<CompositeKey,LongWritable,String,LongWritable> {
+       extends Reducer<CompositeKey,LongWritable,Text,LongWritable> {
 
     private LongWritable result = new LongWritable();
 
@@ -142,7 +142,8 @@ public class CountUserEdits {
         sum += val.get();
       }
       result.set(sum);
-      context.write(key.getSymbol(), result);
+      Text k = new Text(key.toString());
+      context.write(k, result);
     }
   }
 
@@ -206,7 +207,7 @@ public class CountUserEdits {
 
     job.setOutputKeyClass(String.class);
     job.setOutputValueClass(Long.class);
-    
+
     FileInputFormat.addInputPath(job, new Path(args[0]));
     FileOutputFormat.setOutputPath(job, new Path(args[1]));
     System.exit(job.waitForCompletion(true) ? 0 : 1);
