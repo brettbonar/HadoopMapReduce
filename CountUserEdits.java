@@ -206,7 +206,7 @@ public class CountUserEdits {
 
 
     job.setMapperClass(TokenizerMapper.class);
-    job.setCombinerClass(IntSumReducer.class);
+    //job.setCombinerClass(IntSumReducer.class);
     job.setReducerClass(IntSumReducer.class);
 
     FileInputFormat.addInputPath(job, new Path(args[0]));
