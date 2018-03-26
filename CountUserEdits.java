@@ -3,8 +3,8 @@ import java.util.StringTokenizer;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.Long;
-import org.apache.hadoop.io.String;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
@@ -94,7 +94,6 @@ public class CountUserEdits {
   public static class TokenizerMapper
        extends Mapper<Object, String, CompositeKey, LongWritable>{
 
-    private final static LongWritable one = new LongWritable(1);
     private String userId = new String();
 
     public void map(Object key, String value, Context context
@@ -104,9 +103,9 @@ public class CountUserEdits {
 
       userId.set(tokens[0].trim());
 
-      CompositeKey compositeKey = new CompositeKey(userId, one);
+      CompositeKey compositeKey = new CompositeKey(userId, 1);
 
-      context.write(compositeKey, one);
+      context.write(compositeKey, 1);
     }
   }
   
@@ -133,17 +132,14 @@ public class CountUserEdits {
 
   public static class IntSumReducer
        extends Reducer<CompositeKey,Long,String,Long> {
-    private Long result = new Long();
-
     public void reduce(CompositeKey key, Iterable<Long> values,
                        Context context
                        ) throws IOException, InterruptedException {
-      int sum = 0;
+      Long sum = 0;
       for (Long val : values) {
         sum += val.get();
       }
-      result.set(sum);
-      context.write(key.getSymbol(), result);
+      context.write(key.getSymbol(), sum);
     }
   }
 
