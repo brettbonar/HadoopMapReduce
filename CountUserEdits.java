@@ -29,7 +29,7 @@ public class CountUserEdits {
   // https://vangjee.wordpress.com/2012/03/20/secondary-sorting-aka-sorting-values-in-hadoops-mapreduce-programming-paradigm/
   // http://blog.ditullio.fr/2015/12/24/hadoop-basics-filter-aggregate-sort-mapreduce/
   public class CompositeKeyComparator extends WritableComparator {
-    protected CompositeKeyComparator() {
+    public CompositeKeyComparator() {
         super(CompositeKey.class, true);
     }   
     @SuppressWarnings("rawtypes")
@@ -47,7 +47,7 @@ public class CountUserEdits {
     }
   }
   public class NaturalKeyGroupingComparator extends WritableComparator {
-    protected NaturalKeyGroupingComparator() {
+    public NaturalKeyGroupingComparator() {
         super(CompositeKey.class, true);
     }   
     @SuppressWarnings("rawtypes")
