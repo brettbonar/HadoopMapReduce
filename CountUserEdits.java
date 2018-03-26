@@ -205,8 +205,8 @@ public class CountUserEdits {
     job.setCombinerClass(IntSumReducer.class);
     job.setReducerClass(IntSumReducer.class);
 
-    job.setOutputKeyClass(String.class);
-    job.setOutputValueClass(Long.class);
+    job.setOutputKeyClass(Text.class);
+    job.setOutputValueClass(LongWritable.class);
 
     FileInputFormat.addInputPath(job, new Path(args[0]));
     FileOutputFormat.setOutputPath(job, new Path(args[1]));
