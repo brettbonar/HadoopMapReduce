@@ -59,10 +59,10 @@ public class CountUserEdits {
         return k1.getSymbol().compareTo(k2.getSymbol());
     }
   }
-  public static class NaturalKeyPartitioner extends Partitioner<CompositeKey, Long> {
+  public static class NaturalKeyPartitioner extends Partitioner<CompositeKey, LongWritable> {
  
     @Override
-    public int getPartition(CompositeKey key, Long val, int numPartitions) {
+    public int getPartition(CompositeKey key, LongWritable val, int numPartitions) {
         int hash = key.getSymbol().hashCode();
         int partition = hash % numPartitions;
         return partition;
