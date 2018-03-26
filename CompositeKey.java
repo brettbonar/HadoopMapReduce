@@ -19,6 +19,7 @@ import java.io.IOException;
 
 import org.apache.hadoop.io.WritableComparable;
 import org.apache.hadoop.io.WritableUtils;
+import org.apache.hadoop.io.Text;
 
 public class CompositeKey implements WritableComparable<CompositeKey> {
 
