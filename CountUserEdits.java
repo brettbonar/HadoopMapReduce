@@ -102,7 +102,7 @@ public class CountUserEdits {
       StringTokenizer itr = new StringTokenizer(value.toString());
       String[] tokens = value.toString().split("\\s+");
 
-      CompositeKey compositeKey = new CompositeKey(tokens[0].trim(), one);
+      CompositeKey compositeKey = new CompositeKey(tokens[0].trim(), one.get());
 
       context.write(compositeKey, one);
     }
@@ -134,7 +134,7 @@ public class CountUserEdits {
 
     private LongWritable result = new LongWritable();
 
-    public void reduce(CompositeKey key, Iterable<Long> values,
+    public void reduce(CompositeKey key, Iterable<LongWritable> values,
                        Context context
                        ) throws IOException, InterruptedException {
       Long sum = new Long(0);
@@ -142,7 +142,7 @@ public class CountUserEdits {
         sum += val.get();
       }
       result.set(sum);
-      context.write(key.getSymbol(), sum);
+      context.write(key.getSymbol(), result);
     }
   }
 
