@@ -101,9 +101,9 @@ public class CountUserEdits {
       StringTokenizer itr = new StringTokenizer(value.toString());
       String[] tokens = value.toString().split("\\s+");
 
-      CompositeKey compositeKey = new CompositeKey(tokens[0].trim(), Long(1));
+      CompositeKey compositeKey = new CompositeKey(tokens[0].trim(), new Long(1));
 
-      context.write(compositeKey, Long(1));
+      context.write(compositeKey, new Long(1));
     }
   }
   
