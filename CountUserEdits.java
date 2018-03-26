@@ -92,7 +92,7 @@ public class CountUserEdits {
 
 
   public static class TokenizerMapper
-       extends Mapper<Object, String, CompositeKey, LongWritable>{
+       extends Mapper<Object, Text, CompositeKey, LongWritable>{
 
     private final static LongWritable one = new LongWritable(1);
     private String userId = new String();
@@ -201,12 +201,13 @@ public class CountUserEdits {
 		job.setMapOutputKeyClass(CompositeKey.class);
 		job.setMapOutputValueClass(LongWritable.class);
 
+    job.setOutputKeyClass(Text.class);
+    job.setOutputValueClass(LongWritable.class);
+
+
     job.setMapperClass(TokenizerMapper.class);
     job.setCombinerClass(IntSumReducer.class);
     job.setReducerClass(IntSumReducer.class);
-
-    job.setOutputKeyClass(Text.class);
-    job.setOutputValueClass(LongWritable.class);
 
     FileInputFormat.addInputPath(job, new Path(args[0]));
     FileOutputFormat.setOutputPath(job, new Path(args[1]));
