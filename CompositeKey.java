@@ -20,15 +20,16 @@ import java.io.IOException;
 import org.apache.hadoop.io.WritableComparable;
 import org.apache.hadoop.io.WritableUtils;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.io.IntWritable;
 
 public class CompositeKey implements WritableComparable<CompositeKey> {
 
 	private Text symbol;
-	private Long count;
+	private IntWritable count;
 	
 	public CompositeKey() { }
 	
-	public CompositeKey(Text symbol, Long count) {
+	public CompositeKey(Text symbol, IntWritable count) {
 		this.symbol = symbol;
 		this.count = count;
 	}
@@ -78,11 +79,11 @@ public class CompositeKey implements WritableComparable<CompositeKey> {
 		this.symbol = symbol;
 	}
 
-	public Long getCount() {
+	public IntWritable getCount() {
 		return count;
 	}
 
-	public void setCount(Long count) {
+	public void setCount(IntWritable count) {
 		this.count = count;
 	}
 
