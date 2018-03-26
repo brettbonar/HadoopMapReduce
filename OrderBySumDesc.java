@@ -22,7 +22,7 @@ public class OrderBySumDesc {
 
 		@Override
 		public void map(Text city, Text sum, Context context) throws IOException, InterruptedException {
-			int intVal = Int.parseInt(sum.toString());
+			int intVal = Integer.parseInt(sum.toString());
 			intSum.set(intVal);
 			context.write(intSum, city);
 		}
