@@ -94,6 +94,7 @@ public class CountUserEdits {
   public static class TokenizerMapper
        extends Mapper<Object, String, CompositeKey, LongWritable>{
 
+    private final static LongWritable one = new LongWritable(1);
     private String userId = new String();
 
     public void map(Object key, String value, Context context
@@ -101,9 +102,9 @@ public class CountUserEdits {
       StringTokenizer itr = new StringTokenizer(value.toString());
       String[] tokens = value.toString().split("\\s+");
 
-      CompositeKey compositeKey = new CompositeKey(tokens[0].trim(), new Long(1));
+      CompositeKey compositeKey = new CompositeKey(tokens[0].trim(), one);
 
-      context.write(compositeKey, new Long(1));
+      context.write(compositeKey, one);
     }
   }
   
@@ -129,14 +130,18 @@ public class CountUserEdits {
 // }
 
   public static class IntSumReducer
-       extends Reducer<CompositeKey,Long,String,Long> {
+       extends Reducer<CompositeKey,LongWritable,String,LongWritable> {
+
+    private LongWritable result = new LongWritable();
+
     public void reduce(CompositeKey key, Iterable<Long> values,
                        Context context
                        ) throws IOException, InterruptedException {
       Long sum = new Long(0);
-      for (Long val : values) {
-        sum += val;
+      for (LongWritable val : values) {
+        sum += val.get();
       }
+      result.set(sum);
       context.write(key.getSymbol(), sum);
     }
   }
