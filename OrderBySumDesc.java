@@ -18,19 +18,19 @@ public class OrderBySumDesc {
 
 	public static class InverseCitySumMapper extends Mapper<Text, Text, IntWritable, Text> {
 
-		private IntWritable floatSum = new IntWritable();		
+		private IntWritable intSum = new IntWritable();		
 
 		@Override
 		public void map(Text city, Text sum, Context context) throws IOException, InterruptedException {
-			float floatVal = Float.parseFloat(sum.toString());
-			floatSum.set(floatVal);
-			context.write(floatSum, city);
+			int intVal = Int.parseInt(sum.toString());
+			intSum.set(intVal);
+			context.write(intSum, city);
 		}
 	}
 
-	public static class DescendingFloatComparator extends WritableComparator {
+	public static class DescendingIntComparator extends WritableComparator {
 
-		public DescendingFloatComparator() {
+		public DescendingIntComparator() {
 			super(IntWritable.class, true);
 		}
 
@@ -46,16 +46,16 @@ public class OrderBySumDesc {
 	public static void main(String[] args) throws Exception {
 
 		Job job = Job.getInstance(new Configuration(), "Order By Sum Desc");
-		job.setJarByClass(DonationsSumByCity.class);
+		job.setJarByClass(CountUserEdits.class);
 
-		// The mapper which transforms (K:V) => (float(V):K)
+		// The mapper which transforms (K:V) => (int(V):K)
 		job.setMapperClass(InverseCitySumMapper.class);
 		job.setInputFormatClass(KeyValueTextInputFormat.class);
 		job.setMapOutputKeyClass(IntWritable.class);
 		job.setMapOutputValueClass(Text.class);
 
-		// Sort with descending float order
-		job.setSortComparatorClass(DescendingFloatComparator.class);
+		// Sort with descending int order
+		job.setSortComparatorClass(DescendingIntComparator.class);
 
 		// Use default Reducer which simply transforms (K:V1,V2) => (K:V1), (K:V2)
 		job.setReducerClass(Reducer.class);
