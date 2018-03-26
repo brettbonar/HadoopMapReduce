@@ -105,7 +105,7 @@ public class CountUserEdits {
 
       userId.set(tokens[0].trim());
 
-      CompositeKey compositeKey = new CompositeKey(symbol, one);
+      CompositeKey compositeKey = new CompositeKey(userId, one);
 
       context.write(compositeKey, one);
     }
@@ -144,7 +144,7 @@ public class CountUserEdits {
         sum += val.get();
       }
       result.set(sum);
-      context.write(key, result);
+      context.write(key.getSymbol(), result);
     }
   }
 
