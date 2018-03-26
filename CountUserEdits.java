@@ -42,7 +42,7 @@ public class CountUserEdits {
         // if(0 == result) {
         //     result = -1* k1.getCount().compareTo(k2.getCount());
         // }
-        int reuslt = k1.getCount().compareTo(k2.getCount());
+        int result = k1.getCount().compareTo(k2.getCount());
         return result;
     }
   }
@@ -101,11 +101,9 @@ public class CountUserEdits {
       StringTokenizer itr = new StringTokenizer(value.toString());
       String[] tokens = value.toString().split("\\s+");
 
-      userId.set(tokens[0].trim());
+      CompositeKey compositeKey = new CompositeKey(tokens[0].trim(), Long(1));
 
-      CompositeKey compositeKey = new CompositeKey(userId, 1);
-
-      context.write(compositeKey, 1);
+      context.write(compositeKey, Long(1));
     }
   }
   
@@ -135,9 +133,9 @@ public class CountUserEdits {
     public void reduce(CompositeKey key, Iterable<Long> values,
                        Context context
                        ) throws IOException, InterruptedException {
-      Long sum = 0;
+      Long sum = new Long(0);
       for (Long val : values) {
-        sum += val.get();
+        sum += val;
       }
       context.write(key.getSymbol(), sum);
     }
