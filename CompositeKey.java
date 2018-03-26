@@ -57,10 +57,11 @@ public class CompositeKey implements WritableComparable<CompositeKey> {
 
 	@Override
 	public int compareTo(CompositeKey o) {
-		int result = symbol.compareTo(o.symbol);
-		if(0 == result) {
-			result = count.compareTo(o.count);
-		}
+		int result = count.compareTo(o.count);
+		// int result = symbol.compareTo(o.symbol);
+		// if(0 == result) {
+		// 	result = count.compareTo(o.count);
+		// }
 		return result;
 	}
 
