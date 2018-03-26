@@ -3,8 +3,8 @@ import java.util.StringTokenizer;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IntWritable;
-import org.apache.hadoop.io.Text;
+import org.apache.hadoop.io.Long;
+import org.apache.hadoop.io.String;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
@@ -59,10 +59,10 @@ public class CountUserEdits {
         return k1.getSymbol().compareTo(k2.getSymbol());
     }
   }
-  public class NaturalKeyPartitioner extends Partitioner<CompositeKey, IntWritable> {
+  public class NaturalKeyPartitioner extends Partitioner<CompositeKey, Long> {
  
     @Override
-    public int getPartition(CompositeKey key, IntWritable val, int numPartitions) {
+    public int getPartition(CompositeKey key, Long val, int numPartitions) {
         int hash = key.getSymbol().hashCode();
         int partition = hash % numPartitions;
         return partition;
@@ -70,12 +70,12 @@ public class CountUserEdits {
   }
 
   
-// public class SsMapper extends Mapper<LongWritable, Text, CompositeKey, IntWritable> {
+// public class SsMapper extends Mapper<LongWritable, String, CompositeKey, Long> {
 
 // 	private static final Log _log = LogFactory.getLog(SsMapper.class);
 	
 // 	@Override
-// 	public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
+// 	public void map(LongWritable key, String value, Context context) throws IOException, InterruptedException {
 // 		String[] tokens = value.toString().split(",");
 		
 // 		String symbol = tokens[0].trim();
@@ -83,7 +83,7 @@ public class CountUserEdits {
 // 		Double v = Double.parseDouble(tokens[2].trim());
 		
 // 		CompositeKey CompositeKey = new CompositeKey(symbol, timestamp);
-// 		IntWritable stockValue = new IntWritable(v);
+// 		Long stockValue = new Long(v);
 		
 // 		context.write(CompositeKey, stockValue);
 // 		_log.debug(CompositeKey.toString() + " => " + stockValue.toString());
@@ -92,12 +92,12 @@ public class CountUserEdits {
 
 
   public static class TokenizerMapper
-       extends Mapper<Object, Text, CompositeKey, LongWritable>{
+       extends Mapper<Object, String, CompositeKey, LongWritable>{
 
     private final static LongWritable one = new LongWritable(1);
-    private Text userId = new Text();
+    private String userId = new String();
 
-    public void map(Object key, Text value, Context context
+    public void map(Object key, String value, Context context
                     ) throws IOException, InterruptedException {
       StringTokenizer itr = new StringTokenizer(value.toString());
       String[] tokens = value.toString().split("\\s+");
@@ -110,18 +110,18 @@ public class CountUserEdits {
     }
   }
   
-// public class SsReducer extends Reducer<StockKey, IntWritable, Text, Text> {
+// public class SsReducer extends Reducer<StockKey, Long, String, String> {
 
 // 	private static final Log _log = LogFactory.getLog(SsReducer.class);
 	
 // 	@Override
-// 	public void reduce(StockKey key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
-// 		Text k = new Text(key.toString());
+// 	public void reduce(StockKey key, Iterable<Long> values, Context context) throws IOException, InterruptedException {
+// 		String k = new String(key.toString());
 // 		int count = 0;
 		
-// 		Iterator<IntWritable> it = values.iterator();
+// 		Iterator<Long> it = values.iterator();
 // 		while(it.hasNext()) {
-// 			Text v = new Text(it.next().toString());
+// 			String v = new String(it.next().toString());
 // 			context.write(k, v);
 // 			_log.debug(k.toString() + " => " + v.toString());
 // 			count++;
@@ -132,14 +132,14 @@ public class CountUserEdits {
 // }
 
   public static class IntSumReducer
-       extends Reducer<CompositeKey,IntWritable,Text,IntWritable> {
-    private IntWritable result = new IntWritable();
+       extends Reducer<CompositeKey,Long,String,Long> {
+    private Long result = new Long();
 
-    public void reduce(CompositeKey key, Iterable<IntWritable> values,
+    public void reduce(CompositeKey key, Iterable<Long> values,
                        Context context
                        ) throws IOException, InterruptedException {
       int sum = 0;
-      for (IntWritable val : values) {
+      for (Long val : values) {
         sum += val.get();
       }
       result.set(sum);
@@ -170,10 +170,10 @@ public class CountUserEdits {
 // 		job.setSortComparatorClass(CompositeKeyComparator.class);
 		
 // 		job.setMapOutputKeyClass(CompositeKey.class);
-// 		job.setMapOutputValueClass(IntWritable.class);
+// 		job.setMapOutputValueClass(Long.class);
 		
-// 		job.setOutputKeyClass(Text.class);
-// 		job.setOutputValueClass(Text.class);
+// 		job.setOutputKeyClass(String.class);
+// 		job.setOutputValueClass(String.class);
 		
 // 		job.setInputFormatClass(TextInputFormat.class);
 // 		job.setOutputFormatClass(TextOutputFormat.class);
@@ -199,13 +199,13 @@ public class CountUserEdits {
     job.setSortComparatorClass(CompositeKeyComparator.class);
     
 		job.setMapOutputKeyClass(CompositeKey.class);
-		job.setMapOutputValueClass(IntWritable.class);
+		job.setMapOutputValueClass(Long.class);
 
     job.setMapperClass(TokenizerMapper.class);
     job.setCombinerClass(IntSumReducer.class);
     job.setReducerClass(IntSumReducer.class);
-    job.setOutputKeyClass(Text.class);
-    job.setOutputValueClass(IntWritable.class);
+    job.setOutputKeyClass(String.class);
+    job.setOutputValueClass(Long.class);
     FileInputFormat.addInputPath(job, new Path(args[0]));
     FileOutputFormat.setOutputPath(job, new Path(args[1]));
     System.exit(job.waitForCompletion(true) ? 0 : 1);
