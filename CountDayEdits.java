@@ -25,9 +25,12 @@ public class CountDayEdits {
                     ) throws IOException, InterruptedException {
       String[] values = value.toString().split("\\s+");
       SimpleDateFormat date = new SimpleDateFormat("EEEE");
-      Date dateFormat = new Date(Integer.parseInt(values[3]) * 1000);
-      dayOfWeek.set(date.format(dateFormat));
-      context.write(dayOfWeek, one);
+      if (values.length >= 4)
+      {
+        Date dateFormat = new Date(Integer.parseInt(values[3]) * 1000);
+        dayOfWeek.set(date.format(dateFormat));
+        context.write(dayOfWeek, one);
+      }
     }
   }
 
