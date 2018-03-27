@@ -13,6 +13,7 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.KeyValueTextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
+// http://blog.ditullio.fr/2015/12/24/hadoop-basics-filter-aggregate-sort-mapreduce/
 // https://github.com/nicomak/blog/blob/master/donors/src/main/java/mapreduce/donation/OrderBySumDesc.java
 public class OrderBySumDesc {
 	public static class DescendingIntComparator extends WritableComparator {
@@ -42,17 +43,6 @@ public class OrderBySumDesc {
 		}
 	}
 
-  public static class SortReducer
-       extends Reducer<IntWritable, Text, Text, IntWritable> {
-    private IntWritable result = new IntWritable();
-
-    public void reduce(IntWritable key, Text value,
-                       Context context
-                       ) throws IOException, InterruptedException {
-      context.write(value, key);
-    }
-  }
-
 	public static void main(String[] args) throws Exception {
 
 		Job job = Job.getInstance(new Configuration(), "Order By Sum Desc");
@@ -68,7 +58,7 @@ public class OrderBySumDesc {
 		job.setSortComparatorClass(DescendingIntComparator.class);
 
 		// Use default Reducer which simply transforms (K:V1,V2) => (K:V1), (K:V2)
-		job.setReducerClass(SortReducer.class);
+		job.setReducerClass(Reducer.class);
 		job.setNumReduceTasks(1);
 
 		FileInputFormat.setInputPaths(job, new Path(args[0]));

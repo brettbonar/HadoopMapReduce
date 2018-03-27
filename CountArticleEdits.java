@@ -11,19 +11,19 @@ import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
-public class CountUserEdits {
+public class CountArticleEdits {
 
   public static class TokenizerMapper
        extends Mapper<Object, Text, Text, IntWritable>{
 
     private final static IntWritable one = new IntWritable(1);
-    private Text userId = new Text();
+    private Text articleId = new Text();
 
     public void map(Object key, Text value, Context context
                     ) throws IOException, InterruptedException {
       String[] values = value.toString().split("\\s+");
-      userId.set(values[0]);
-      context.write(userId, one);
+      articleId.set(values[1]);
+      context.write(articleId, one);
     }
   }
 
@@ -46,7 +46,7 @@ public class CountUserEdits {
   public static void main(String[] args) throws Exception {
     Configuration conf = new Configuration();
     Job job = Job.getInstance(conf, "edits count");
-    job.setJarByClass(CountUserEdits.class);
+    job.setJarByClass(CountArticleEdits.class);
     job.setMapperClass(TokenizerMapper.class);
     job.setCombinerClass(IntSumReducer.class);
     job.setReducerClass(IntSumReducer.class);

@@ -1,4 +1,6 @@
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.StringTokenizer;
 
 import org.apache.hadoop.conf.Configuration;
@@ -11,19 +13,21 @@ import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
-public class CountUserEdits {
+public class CountDayEdits {
 
   public static class TokenizerMapper
        extends Mapper<Object, Text, Text, IntWritable>{
 
     private final static IntWritable one = new IntWritable(1);
-    private Text userId = new Text();
+    private Text dayOfWeek = new Text();
 
     public void map(Object key, Text value, Context context
                     ) throws IOException, InterruptedException {
       String[] values = value.toString().split("\\s+");
-      userId.set(values[0]);
-      context.write(userId, one);
+      SimpleDateFormat date = new SimpleDateFormat("EEEE");
+      Date dateFormat = new Date(parseInt(values[3]) * 1000);
+      dayOfWeek.set(date.format(dateFormat));
+      context.write(dayOfWeek, one);
     }
   }
 
@@ -46,7 +50,7 @@ public class CountUserEdits {
   public static void main(String[] args) throws Exception {
     Configuration conf = new Configuration();
     Job job = Job.getInstance(conf, "edits count");
-    job.setJarByClass(CountUserEdits.class);
+    job.setJarByClass(CountDayEdits.class);
     job.setMapperClass(TokenizerMapper.class);
     job.setCombinerClass(IntSumReducer.class);
     job.setReducerClass(IntSumReducer.class);
